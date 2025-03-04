@@ -24,7 +24,7 @@
       "dependencies": {}
     },
     "com.realitycollective.service-framework": {
-      "version": "file:C:/Users/admin/com.realitycollective.service-framework-main/com.realitycollective.service-framework-main",
+      "version": "file:C:/Users/Nora_ZVSL/com.realitycollective.service-framework-main/com.realitycollective.service-framework-main",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -34,7 +34,7 @@
       }
     },
     "com.realitycollective.utilities": {
-      "version": "file:C:/Users/admin/com.realitycollective.utilities-main/com.realitycollective.utilities-main",
+      "version": "file:C:/Users/Nora_ZVSL/com.realitycollective.utilities-main/com.realitycollective.utilities-main",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -43,7 +43,7 @@
       }
     },
     "com.unity.barracuda": {
-      "version": "file:C:/Users/admin/barracuda-release-release-3.0.1/barracuda-release-release-3.0.1",
+      "version": "file:C:/Users/Nora_ZVSL/barracuda-release-release-3.0.1/barracuda-release-release-3.0.1",
       "depth": 0,
       "source": "local",
       "dependencies": {
