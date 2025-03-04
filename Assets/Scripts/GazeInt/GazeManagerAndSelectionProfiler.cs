@@ -14,16 +14,18 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     [SerializeField] private GazeInteractor gazeInteractor;
     public SelectionOptions selectOption;
     [SerializeField] private float TimeToSelect = 1f;
+    [SerializeField] private float fixationRadius = 0.01f; // Allowable deviation
 
     private Camera cam = null;
     private Ray actGazeRay;
     public Ray actGazeRayLocal;
 
-    private Vector3 gazeHitPoint_;
-    private float fixationTime_;
+    private Vector3 lastGazeHitPoint;
+    private Vector3 gazeHitPoint_; //used for aligning eye and head
+    private float fixationTimer = 0f; //was nothing (timedelta...)
 
     private GameObject fixatedObject_ = null;
-    //public GetFixatedObject();
+    private bool isFixated = false;
 
     private bool select_ = false;
 
@@ -62,18 +64,66 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     }
 
     private void CheckGazeFixation() {
+        //precursor to selection.... head alignment to gaze confirms the selection. 
         //Debug.Log("CheckFixation");
         RaycastHit gazeHit;
 
-        if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity)) {
-            if (fixatedObject_ == gazeHit.transform.gameObject)
+        if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity))
+        {
+            GameObject hitObject = gazeHit.collider.gameObject;
+            if (fixatedObject_ == gazeHit.collider.gameObject)
             {
-                gazeHitPoint_ = gazeHit.point;
-                Debug.Log("Fixation");
+                if (Vector3.Distance(lastGazeHitPoint, gazeHit.point) < fixationRadius)
+                {
+                    fixationTimer += Time.deltaTime;
+                    if (fixationTimer >= TimeToSelect)
+                    {
+                        isFixated = true;
+                        Debug.Log("current Fixation"); //never hits this....
+                    }
+                }
+                else
+                {
+                    ResetFixation();
+                }
             }
-
+            else
+            {
+                // New object detected, reset fixation tracking
+                fixatedObject_ = hitObject;
+                lastGazeHitPoint = gazeHit.point;
+                fixationTimer = 0f;
+                isFixated = false;
+                Debug.Log("NEW fixaton");
+            }
+        }
+        else
+        {
+            ResetFixation();
         }
     }
+
+    private void ResetFixation()
+    {
+        fixationTimer = 0f;
+        isFixated = false;
+    }
+
+    public bool IsFixated()
+    {
+        return isFixated;
+    }
+
+    public GameObject GetFixatedObject()
+    {
+        return isFixated ? fixatedObject_ : null;
+    }
+
+    public Vector3 GetHitPoint()
+    {
+        return isFixated ? lastGazeHitPoint : Vector3.zero;
+    }
+
 
     public Ray GetCombinedGazeRay()
     {
@@ -83,7 +133,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         return actGazeRay;
     }
 
-    public GameObject GetFixatedObject()
+    /*ORIGINAL
+     * public GameObject GetFixatedObject()
     {
         return fixatedObject_;
     }
@@ -91,5 +142,5 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public Vector3 GetHitPoint()
     {
         return gazeHitPoint_;
-    }
+    }*/
 }
