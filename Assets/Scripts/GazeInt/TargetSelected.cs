@@ -10,11 +10,6 @@ public class TargetSelected : MonoBehaviour
      */
     private bool targetSelected;
 
-    public bool TargetSelected
-    {
-        get { return targetSelected; }
-        set { targetSelected = value; }
-    }
 
     void Awake()
     { 
@@ -30,6 +25,7 @@ public class TargetSelected : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //could change material colors untill selection is complete or show text that says selected
         
     }
 }

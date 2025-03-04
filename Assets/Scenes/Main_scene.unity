@@ -970,6 +970,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1593209536}
+  - component: {fileID: 1593209537}
   m_Layer: 0
   m_Name: ETManager
   m_TagString: Untagged
@@ -992,6 +993,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1593209537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593209535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f35b35f9a4411d48af156516030bf63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gazeInteractor: {fileID: 2143296254}
 --- !u!1001 &2143296253
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1052,6 +1066,17 @@ PrefabInstance:
       addedObject: {fileID: 906539019}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acbf65a81ce2cf94f82a0809298acf70, type: 3}
+--- !u!114 &2143296254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 529201713281613631, guid: acbf65a81ce2cf94f82a0809298acf70, type: 3}
+  m_PrefabInstance: {fileID: 2143296253}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1175590bcfccd6d44a4c8f9a15292536, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
