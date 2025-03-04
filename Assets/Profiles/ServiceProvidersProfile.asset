@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e313293fba4e5a946adc1cc90678c91c, type: 3}
+  m_Name: ServiceProvidersProfile
+  m_EditorClassIdentifier: 
+  configurations:
+  - instancedType:
+      reference: 11f556bc-1f7b-4892-b6db-c80e29c5cde9
+    name: Yolo Processor
+    priority: 0
+    profile: {fileID: 11400000, guid: b0c860e01e3c60f41bd50ed07857839f, type: 2}
+    platformEntries:
+      runtimePlatforms:
+      - reference: e0d70d45-a52a-4b03-bcdf-8fe367555516
+      - reference: 5b39043a-bf08-4ece-81c4-57f945760382
+      - reference: 16a3125f-31d5-4ec6-a120-8be889a74d27
+      - reference: 3dfb96a6-7f67-4f83-835b-32725bc0a2c0
+  initializeOnPlay: 0
+  doNotDestroyServiceManagerOnLoad: 1
+  sceneServiceConfiguration: []

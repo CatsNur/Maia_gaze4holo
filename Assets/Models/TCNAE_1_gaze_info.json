@@ -1,0 +1,1 @@
+{"name": "TCNAE_1", "model_type": "type", "model_parameter": {"seq_len": 43, "input_dim": 1, "num_channels": [16, 32, 64], "kernel_size": 7, "latent_dim": 10}, "train_parameter": {"num_epochs": 400, "batch_size": 4000, "criterion": "MSELoss()", "learning_rate": 0.001, "use_gpu": true}, "th_perc": 99, "th_value": 0.0951419904083014}
