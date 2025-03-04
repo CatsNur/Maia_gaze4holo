@@ -42,7 +42,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     void Start()
     {
         Debug.Log("Gaze Manager start() called");
-        cam = Camera.main;
+        cam = Camera.main;//not sure where this comes in anymore
 
     }
 
@@ -55,9 +55,26 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 gazeInteractor.rayOriginTransform.forward * 3); //3m away max....?
             actGazeRayLocal = new Ray(gazeInteractor.rayOriginTransform.localPosition, (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3);
             //Hopefully that is the local and is correct. 
-            //Debug.Log("something");
+            //Debug.Log("access gaze");
+
+            CheckGazeFixation();
         }
     }
+
+    private void CheckGazeFixation() {
+        //Debug.Log("CheckFixation");
+        RaycastHit gazeHit;
+
+        if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity)) {
+            if (fixatedObject_ == gazeHit.transform.gameObject)
+            {
+                gazeHitPoint_ = gazeHit.point;
+                Debug.Log("Fixation");
+            }
+
+        }
+    }
+
     public Ray GetCombinedGazeRay()
     {
         //Debug.Log(gazeInteractor.rayOriginTransform.position);
