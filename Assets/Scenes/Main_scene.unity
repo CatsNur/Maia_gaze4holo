@@ -140,6 +140,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Quest1
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
+      propertyPath: m_TagString
+      value: TargetObject
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.3
@@ -283,7 +287,7 @@ MonoBehaviour:
         m_MethodName: set_material
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 2100000, guid: 4d9634496b867de43ab769506b202b67, type: 2}
+          m_ObjectArgument: {fileID: 2100000, guid: e0c5ea249ae97a443bf9e5e7ad530a7f, type: 2}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Material, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
