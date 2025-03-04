@@ -1006,6 +1006,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gazeInteractor: {fileID: 2143296254}
+  selectOption: 0
+  TimeToSelect: 1
 --- !u!1001 &2143296253
 PrefabInstance:
   m_ObjectHideFlags: 0

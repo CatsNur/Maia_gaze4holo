@@ -13,11 +13,16 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     }
     [SerializeField] private GazeInteractor gazeInteractor;
     public SelectionOptions selectOption;
+    [SerializeField] private float TimeToSelect = 1f;
 
     private Camera cam = null;
     private Ray actGazeRay;
     public Ray actGazeRayLocal;
 
+    private Vector3 gazeHitPoint_;
+    private float fixationTime_;
+
+    private GameObject fixatedObject_ = null;
     //public GetFixatedObject();
 
     private bool select_ = false;
@@ -59,5 +64,15 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
                 gazeInteractor.rayOriginTransform.forward);
         return actGazeRay;
+    }
+
+    public GameObject GetFixatedObject()
+    {
+        return fixatedObject_;
+    }
+
+    public Vector3 GetHitPoint()
+    {
+        return gazeHitPoint_;
     }
 }
