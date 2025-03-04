@@ -70,20 +70,33 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
         if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity))
         {
+
+            //TODO: Ray headGaze = new(eyeGaze.origin, Camera.main.transform.forward); 
             GameObject hitObject = gazeHit.collider.gameObject;
-            if (fixatedObject_ == gazeHit.collider.gameObject)
+            //Debug.Log("Raycast hit: " + hitObject.name);
+
+            // Only process objects with the "TargetObject" tag
+            if (!hitObject.CompareTag("TargetObject"))
             {
-                if (Vector3.Distance(lastGazeHitPoint, gazeHit.point) < fixationRadius)
+                ResetFixation();
+                return; // Ignore objects without the correct tag
+            }
+            //Debug.Log("Raycast hit: " + hitObject.name);
+            if (fixatedObject_ == hitObject)
+            {
+                if (Vector3.Distance(lastGazeHitPoint, gazeHit.point) < fixationRadius) //currently jumping to the else that resets the timer. and also could fuck with bjorns code
                 {
                     fixationTimer += Time.deltaTime;
+                    //Debug.Log($"Fixation timer: {fixationTimer}/{TimeToSelect}");
                     if (fixationTimer >= TimeToSelect)
                     {
                         isFixated = true;
                         Debug.Log("current Fixation"); //never hits this....
                     }
                 }
-                else
+                else //if (fixatedObject_ != gazeHit.transform.gameObject) is from bjorn. also check it's not null i guess
                 {
+                    Debug.Log("resetting");
                     ResetFixation();
                 }
             }
