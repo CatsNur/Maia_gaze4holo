@@ -8,6 +8,8 @@ public class DwellableObject : MonoBehaviour
     private Material originalMaterial;
     [SerializeField] public Material selectedMaterial; // Assign this in the Inspector
 
+    public bool hasSelected = false;
+
     void Awake()
     {
         //objRenderer = GetComponent<Renderer>(); //this assumes its on obj, assed chatgpt for sophis
@@ -65,14 +67,22 @@ public class DwellableObject : MonoBehaviour
         if (obj == gameObject)
         {
             Debug.Log("Dwell exited: " + obj.name);
+            hasSelected = false;
         }
     }
     private void HandleSelection(GameObject obj) {
-        if (obj == gameObject) {
+        if (obj == gameObject && !hasSelected) {
             Debug.Log("Selected");
             //lets change Material to orange
             objRenderer.material = selectedMaterial;
+            hasSelected = true;
         }
+    }
+    // TODO: will need this with the error detection, currently not used
+    public void ResetSelection()
+    {
+        hasSelected = false;
+        objRenderer.material = originalMaterial; // Optionally reset material to original
     }
 
 }
