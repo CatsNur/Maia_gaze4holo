@@ -10,8 +10,25 @@ public class DwellableObject : MonoBehaviour
 
     void Awake()
     {
+        //objRenderer = GetComponent<Renderer>(); //this assumes its on obj, assed chatgpt for sophis
+        //originalMaterial = objRenderer.material; // Store the original material
+
+        // First, try to get the Renderer from the parent object
         objRenderer = GetComponent<Renderer>();
-        originalMaterial = objRenderer.material; // Store the original material
+        // If no Renderer is found on the parent, try finding it in the children
+        if (objRenderer == null)
+        {
+            objRenderer = GetComponentInChildren<Renderer>();
+        }
+        // If no Renderer is found in the object or its children, log an error
+        if (objRenderer == null)
+        {
+            Debug.LogError("No Renderer found in the object or its children for " + gameObject.name);
+        }
+        else
+        {
+            originalMaterial = objRenderer.material; // Store the original material
+        }
     }
 
     void OnEnable()

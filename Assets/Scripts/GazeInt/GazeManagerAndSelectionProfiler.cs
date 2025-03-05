@@ -118,7 +118,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
-                            OnSelect?.Invoke(hitObject);
+                            OnSelect?.Invoke(hitObject); //currently updating every frame....
                         }
                     }
                         
