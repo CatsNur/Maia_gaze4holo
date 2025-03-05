@@ -84,10 +84,10 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             if (hoverable == null)
             {
                 ClearFixation();
-                return; // Ignore objects without HoverableObject
+                return; 
             }
 
-            //TODO: Ray headGaze = new(eyeGaze.origin, Camera.main.transform.forward); 
+           
             GameObject hitObject = gazeHit.collider.gameObject;
             //Debug.Log("Raycast hit: " + hitObject.name);
 
@@ -102,19 +102,18 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             }
             else
             {
-                //send out head ray here ot one nest down
+                
                 Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward);
                 fixationTimer += Time.deltaTime;
                 if (fixationTimer >= TimeToSelect)
                 {
                     //if dwell longer than the given threshold, we have a stay and can check selection quali
-                    //send out head ray, here or one nest above
                     OnDwellStay?.Invoke(hitObject);
                     RaycastHit headHit;
-                    if (Physics.Raycast(headGaze, out headHit, Mathf.Infinity))
+                    if (Physics.Raycast(headGaze, out headHit, Mathf.Infinity))//checking selection quali
                     {
                         //if a head collider happens
-                        gazeHitPoint_ = gazeHit.point; //do i need the point
+                        gazeHitPoint_ = gazeHit.point; //do i need the point?
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
@@ -122,7 +121,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         }
                     }
                         
-                    //fixationTime_ = 0.0f; do i need this
+                    //fixationTime_ = 0.0f; do i need this, currently no
                 }
             }   
         }
@@ -149,7 +148,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
     }
 
-    public bool IsFixated()
+    public bool IsFixated() //not using currently
     {
         return isFixated;
     }
@@ -159,13 +158,13 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         return isFixated ? fixatedObject_ : null;
     }*/
 
-    public Vector3 GetHitPoint()
+    public Vector3 GetHitPoint() //not using currently
     {
         return isFixated ? lastGazeHitPoint : Vector3.zero;
     }
 
 
-    public Ray GetCombinedGazeRay()
+    public Ray GetCombinedGazeRay() //not using currently
     {
         //Debug.Log(gazeInteractor.rayOriginTransform.position);
         actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
@@ -173,7 +172,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         return actGazeRay;
     }
 
-    /*ORIGINAL
+    /*ORIGINAL.... just in case
      * public GameObject GetFixatedObject()
     {
         return fixatedObject_;
