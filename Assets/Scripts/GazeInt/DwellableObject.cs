@@ -9,12 +9,14 @@ public class DwellableObject : MonoBehaviour
         GazeManagerAndSelectionProfiler.OnDwellEnter += HandleDwellEnter;
         GazeManagerAndSelectionProfiler.OnDwellStay += HandleDwellStay;
         GazeManagerAndSelectionProfiler.OnDwellExit += HandleDwellExit;
+        GazeManagerAndSelectionProfiler.OnSelect += HandleSelection;
     }
     void OnDisable()
     {
         GazeManagerAndSelectionProfiler.OnDwellEnter -= HandleDwellEnter;
         GazeManagerAndSelectionProfiler.OnDwellStay -= HandleDwellStay;
         GazeManagerAndSelectionProfiler.OnDwellExit -= HandleDwellExit;
+        GazeManagerAndSelectionProfiler.OnSelect -= HandleSelection;
     }
     private void HandleDwellEnter(GameObject obj) 
     {
@@ -36,6 +38,11 @@ public class DwellableObject : MonoBehaviour
         if (obj == gameObject)
         {
             Debug.Log("Dwell exited: " + obj.name);
+        }
+    }
+    private void HandleSelection(GameObject obj) {
+        if (obj == gameObject) {
+            Debug.Log("Selected");
         }
     }
 

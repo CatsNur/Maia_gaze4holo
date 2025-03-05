@@ -2,6 +2,7 @@ using MixedReality.Toolkit.Input;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GazeManagerAndSelectionProfiler : MonoBehaviour
@@ -31,6 +32,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public static event Action<GameObject> OnDwellEnter;
     public static event Action<GameObject> OnDwellStay;
     public static event Action<GameObject> OnDwellExit;
+    public static event Action<GameObject> OnSelect;
     private GameObject lastDwelledObject;
     
     private bool select_ = false;
@@ -100,12 +102,26 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             }
             else
             {
+                //send out head ray here ot one nest down
+                Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward);
                 fixationTimer += Time.deltaTime;
                 if (fixationTimer >= TimeToSelect)
                 {
                     //if dwell longer than the given threshold, we have a stay and can check selection quali
-                    //select_ = true; only if align of head
+                    //send out head ray, here or one nest above
                     OnDwellStay?.Invoke(hitObject);
+                    RaycastHit headHit;
+                    if (Physics.Raycast(headGaze, out headHit, Mathf.Infinity))
+                    {
+                        //if a head collider happens
+                        gazeHitPoint_ = gazeHit.point; //do i need the point
+                        if (HeadAligned(gazeHit,headHit))
+                        {
+                            select_ = true;
+                            OnSelect?.Invoke(hitObject);
+                        }
+                    }
+                        
                     //fixationTime_ = 0.0f; do i need this
                 }
             }   
@@ -126,6 +142,11 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     {
         fixationTimer = 0f;
         isFixated = false;
+    }
+    private bool HeadAligned(RaycastHit gH,RaycastHit hH) {
+        // takes hit colliders
+        return gH.transform.gameObject == hH.transform.gameObject;
+
     }
 
     public bool IsFixated()
