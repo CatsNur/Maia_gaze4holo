@@ -1,4 +1,5 @@
 using MixedReality.Toolkit.Input;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     [SerializeField] private GazeInteractor gazeInteractor;
     public SelectionOptions selectOption;
     [SerializeField] private float TimeToSelect = 1f;
-    [SerializeField] private float fixationRadius = 0.01f; // Allowable deviation
+    [SerializeField] private float fixationRadius = 0.01f; // Allowable deviation, not in Bjorns orig code tho
 
     private Camera cam = null;
     private Ray actGazeRay;
@@ -24,9 +25,14 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 gazeHitPoint_; //used for aligning eye and head
     private float fixationTimer = 0f; //was nothing (timedelta...)
 
-    private GameObject fixatedObject_ = null;
+    
     private bool isFixated = false;
-
+    //trying something new with actions that will talk to code on the targets
+    public static event Action<GameObject> OnDwellEnter;
+    public static event Action<GameObject> OnDwellStay;
+    public static event Action<GameObject> OnDwellExit;
+    private GameObject lastDwelledObject;
+    
     private bool select_ = false;
 
     public bool Select()
@@ -71,48 +77,46 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity))
         {
 
+           
+            // Check if the object has a HoverableObject component
+            DwellableObject hoverable = gazeHit.collider.GetComponent<DwellableObject>();
+            if (hoverable == null)
+            {
+                ClearFixation();
+                return; // Ignore objects without HoverableObject
+            }
+
             //TODO: Ray headGaze = new(eyeGaze.origin, Camera.main.transform.forward); 
             GameObject hitObject = gazeHit.collider.gameObject;
             //Debug.Log("Raycast hit: " + hitObject.name);
 
-            // Only process objects with the "TargetObject" tag
-            if (!hitObject.CompareTag("TargetObject"))
+            if (hitObject != lastDwelledObject)
             {
+                if (lastDwelledObject != null)
+                    OnDwellExit?.Invoke(lastDwelledObject);
+
+                lastDwelledObject = hitObject;
                 ResetFixation();
-                return; // Ignore objects without the correct tag
-            }
-            //Debug.Log("Raycast hit: " + hitObject.name);
-            if (fixatedObject_ == hitObject)
-            {
-                if (Vector3.Distance(lastGazeHitPoint, gazeHit.point) < fixationRadius) //currently jumping to the else that resets the timer. and also could fuck with bjorns code
-                {
-                    fixationTimer += Time.deltaTime;
-                    //Debug.Log($"Fixation timer: {fixationTimer}/{TimeToSelect}");
-                    if (fixationTimer >= TimeToSelect)
-                    {
-                        isFixated = true;
-                        Debug.Log("current Fixation"); //never hits this....
-                    }
-                }
-                else //if (fixatedObject_ != gazeHit.transform.gameObject) is from bjorn. also check it's not null i guess
-                {
-                    Debug.Log("resetting");
-                    ResetFixation();
-                }
+                OnDwellEnter?.Invoke(hitObject);
             }
             else
             {
-                // New object detected, reset fixation tracking
-                fixatedObject_ = hitObject;
-                lastGazeHitPoint = gazeHit.point;
-                fixationTimer = 0f;
-                isFixated = false;
-                Debug.Log("NEW fixaton");
-            }
+                fixationTimer += Time.deltaTime;
+                if (fixationTimer >= TimeToSelect)
+                {
+                    OnDwellStay?.Invoke(hitObject);
+                }
+            }   
         }
-        else
-        {
-            ResetFixation();
+        else {
+            ClearFixation();
+        }
+        
+    }
+    private void ClearFixation() {
+        if (lastDwelledObject != null) {
+            OnDwellExit?.Invoke(lastDwelledObject);
+            lastDwelledObject = null;
         }
     }
 
@@ -127,10 +131,10 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         return isFixated;
     }
 
-    public GameObject GetFixatedObject()
-    {
+    /*public GameObject GetFixatedObject()
+    {//Don't think we need this anymore with the actions
         return isFixated ? fixatedObject_ : null;
-    }
+    }*/
 
     public Vector3 GetHitPoint()
     {
