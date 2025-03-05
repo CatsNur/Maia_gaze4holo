@@ -77,8 +77,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity))
         {
 
-           
-            // Check if the object has a HoverableObject component
+            // Check if the object has a DwellableObject component
             DwellableObject hoverable = gazeHit.collider.GetComponent<DwellableObject>();
             if (hoverable == null)
             {
@@ -104,7 +103,10 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 fixationTimer += Time.deltaTime;
                 if (fixationTimer >= TimeToSelect)
                 {
+                    //if dwell longer than the given threshold, we have a stay and can check selection quali
+                    //select_ = true; only if align of head
                     OnDwellStay?.Invoke(hitObject);
+                    //fixationTime_ = 0.0f; do i need this
                 }
             }   
         }

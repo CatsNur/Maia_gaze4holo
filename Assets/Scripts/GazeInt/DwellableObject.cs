@@ -28,14 +28,14 @@ public class DwellableObject : MonoBehaviour
     {
         if (obj == gameObject) {
             Debug.Log("Dwell is hovering over: " + obj.name);
-            //do the selection paradigm
+            //do the selection paradigm, or maybe invoke?
         }
     }
     private void HandleDwellExit(GameObject obj) 
     {
         if (obj == gameObject)
         {
-            Debug.Log("Mouse exited: " + obj.name);
+            Debug.Log("Dwell exited: " + obj.name);
         }
     }
 
