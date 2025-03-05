@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class DwellableObject : MonoBehaviour
 {
+    private Renderer objRenderer;
+    private Material originalMaterial;
+    [SerializeField] public Material selectedMaterial; // Assign this in the Inspector
+
+    void Awake()
+    {
+        objRenderer = GetComponent<Renderer>();
+        originalMaterial = objRenderer.material; // Store the original material
+    }
+
     void OnEnable()
     {
         GazeManagerAndSelectionProfiler.OnDwellEnter += HandleDwellEnter;
@@ -43,6 +53,8 @@ public class DwellableObject : MonoBehaviour
     private void HandleSelection(GameObject obj) {
         if (obj == gameObject) {
             Debug.Log("Selected");
+            //lets change Material to orange
+            objRenderer.material = selectedMaterial;
         }
     }
 
