@@ -23,7 +23,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public Ray actGazeRayLocal;
 
     private Vector3 lastGazeHitPoint;
-    private Vector3 gazeHitPoint_; //used for aligning eye and head
+    private Vector3 gazeHitPoint_; //used for aligning eye and head, but not actually
     private float fixationTimer = 0f; //was nothing (timedelta...)
 
     
@@ -36,6 +36,13 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private GameObject lastDwelledObject;
     
     private bool select_ = false;
+
+    //stuff from laser script going here,
+    //for the error detection on the selection and related vectors
+    private ErrorDetection errorDetection;
+    private List<float> gazeAngles = new List<float>();
+    private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
+    private float timeToDestroy = 0.25f; //time to destroy the target, but not really
 
     public bool Select()
     {
@@ -66,6 +73,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             actGazeRayLocal = new Ray(gazeInteractor.rayOriginTransform.localPosition, (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3);
             //Hopefully that is the local and is correct. 
             //Debug.Log("access gaze");
+
+            //UpdateAngleList(); //TODO: make sure goes here
 
             CheckGazeFixation();
         }
@@ -117,7 +126,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
-                            OnSelect?.Invoke(hitObject); //currently updating every frame....
+                            OnSelect?.Invoke(hitObject);
+                            StartCoroutine(RunSelectionError());
                         }
                     }
                         
@@ -182,4 +192,69 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     {
         return gazeHitPoint_;
     }*/
+
+    //code from bjorn's laser script going here, gets called when selection happens.. 
+    private void UpdateAngleList()
+    {
+        Debug.Log("Angle update getting called"); //originally is called everyframe
+        Vector3 newGV = actGazeRayLocal.direction;
+        float angle;
+
+        if (gazeAngles.Count == 0) angle = 0f;
+        else angle = Vector3.Angle(lastGV, newGV);
+
+        lastGV = newGV;
+
+        gazeAngles.Add(angle);
+        if (gazeAngles.Count > errorDetection.seqLength)
+        {
+            gazeAngles.RemoveAt(0);
+        }
+    }
+    IEnumerator RunSelectionError() 
+    {
+        //Attach an animated robot arm that starts a movement process once this is called
+        //FYI: Laser time to destroy is 0.25f
+        float selectionTimer = 0.0f;
+        while (selectionTimer < (timeToDestroy + 0.05f))
+        {
+            selectionTimer += Time.deltaTime;
+            if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms
+            {
+                if (errorDetection.CheckError(gazeAngles))
+                {
+                    Debug.Log("Detect false selection.");
+                    //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
+                    break;
+                }
+                else 
+                {
+                    Debug.Log("Detect correct selection.");
+                    //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
+                }
+            }
+            /*if (target == null)
+            {
+                break;
+            }
+            if (target.GetComponent<Target>() != null)
+            {
+                target.GetComponent<Target>().PercentHitpointsUpdate(Time.deltaTime / laserMaxTimer);
+            }*/
+            yield return null;
+        }
+        //that should be it, but here just in case
+        /*if (target != null) // if target is null, it is already destroyed so points are done
+        {
+            if (!target.tag.Contains("Target"))
+            {
+                pointManager.AddPoints(-manager.maximalPoints, select.GetHitPoint());
+            }
+        }
+
+        beam.enabled = false;
+        soundManager.StopLaserSound();
+        particlesA.Stop();
+        yield return null;*/
+     }
 }

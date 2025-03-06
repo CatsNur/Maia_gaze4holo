@@ -22,7 +22,7 @@ public class ErrorDetection : MonoBehaviour
 
 
     //private Manager manager;
-    private SelectionOptions selectOption = SelectionOptions.headAndGaze;
+    //private SelectionOptions selectOption = SelectionOptions.headAndGaze;
     private float th;
     private Model model;
     private IWorker worker;
@@ -41,7 +41,7 @@ public class ErrorDetection : MonoBehaviour
 
     private void PrepareWorker()
     {
-        switch (selectOption)
+        /*switch (selectOption)
         {
             case SelectionOptions.gaze:
                 model = ModelLoader.Load(modelSourceGaze);
@@ -60,7 +60,10 @@ public class ErrorDetection : MonoBehaviour
                 break;
             default:
                 break;
-        }
+        }*/
+        model = ModelLoader.Load(modelSourceHeadAndGaze);
+        th = thHeadAndGaze;
+        Debug.Log("Load head and gaze model.");
         worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, model);
     }
 
