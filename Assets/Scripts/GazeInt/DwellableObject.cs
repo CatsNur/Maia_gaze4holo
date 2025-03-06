@@ -7,6 +7,7 @@ public class DwellableObject : MonoBehaviour
     private Renderer objRenderer;
     private Material originalMaterial;
     [SerializeField] public Material selectedMaterial; // Assign this in the Inspector
+    [SerializeField] public Material falseSelectionMaterial;
 
     public bool hasSelected = false;
 
@@ -39,6 +40,7 @@ public class DwellableObject : MonoBehaviour
         GazeManagerAndSelectionProfiler.OnDwellStay += HandleDwellStay;
         GazeManagerAndSelectionProfiler.OnDwellExit += HandleDwellExit;
         GazeManagerAndSelectionProfiler.OnSelect += HandleSelection;
+        GazeManagerAndSelectionProfiler.SelectionError += SelectionError;
     }
     void OnDisable()
     {
@@ -46,6 +48,7 @@ public class DwellableObject : MonoBehaviour
         GazeManagerAndSelectionProfiler.OnDwellStay -= HandleDwellStay;
         GazeManagerAndSelectionProfiler.OnDwellExit -= HandleDwellExit;
         GazeManagerAndSelectionProfiler.OnSelect -= HandleSelection;
+        GazeManagerAndSelectionProfiler.SelectionError -= SelectionError;
     }
     private void HandleDwellEnter(GameObject obj) 
     {
@@ -78,9 +81,21 @@ public class DwellableObject : MonoBehaviour
             hasSelected = true;
         }
     }
+    private void SelectionError(GameObject obj)
+    {
+        if (obj == gameObject && !hasSelected)
+        {
+            Debug.Log("Selected");
+            //lets change Material to orange
+            objRenderer.material = selectedMaterial;
+            hasSelected = false;
+        }
+    }
+
     // TODO: will need this with the error detection, currently not used
     public void ResetSelection()
     {
+        //could call this in the gaze manager
         hasSelected = false;
         objRenderer.material = originalMaterial; // Optionally reset material to original
     }

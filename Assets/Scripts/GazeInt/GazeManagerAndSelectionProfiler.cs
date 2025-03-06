@@ -33,9 +33,11 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public static event Action<GameObject> OnDwellStay;
     public static event Action<GameObject> OnDwellExit;
     public static event Action<GameObject> OnSelect;
+    public static event Action<GameObject> SelectionError;
     private GameObject lastDwelledObject;
     
     private bool select_ = false;
+    private bool falseSelectionDetected = false; //TODO: check logic of this hold up
 
     //stuff from laser script going here,
     //for the error detection on the selection and related vectors
@@ -131,9 +133,14 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                             if (errorDetection == null)
                             {
                                 Debug.LogError("ErrorDetection is not assigned in the Manager script!");
-                                return; // Don't start the coroutine if errorDetection is null
+                                return; // Don't start the coroutine if errorDetection is null, pretend nothing happened
                             }
                             StartCoroutine(RunSelectionError());
+                            //if selection false
+                            if (falseSelectionDetected)
+                            {
+                                SelectionError?.Invoke(hitObject);
+                            }
                         }
                     }
                         
@@ -150,6 +157,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         if (lastDwelledObject != null) {
             OnDwellExit?.Invoke(lastDwelledObject);
             lastDwelledObject = null;
+            falseSelectionDetected = false;//not sure if necessary here
         }
     }
 
@@ -157,6 +165,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     {
         fixationTimer = 0f;
         isFixated = false;
+        falseSelectionDetected = false;
     }
     private bool HeadAligned(RaycastHit gH,RaycastHit hH) {
         // takes hit colliders
@@ -203,7 +212,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private void UpdateAngleList()
     {
         //Debug.Log("Angle update getting called"); //originally is called everyframe
-        Vector3 newGV = actGazeRay.direction;//ORIG HAS TO BE THIS actGazeRayLocal.direction; //Local issues?
+        Vector3 newGV = actGazeRayLocal.direction;//ORIG HAS TO BE THIS actGazeRayLocal.direction; //Local issues?
         Debug.Log("New GV: " + newGV.ToString());
         Debug.Log("Last GV: " + lastGV.ToString());
         float angle;
@@ -238,12 +247,14 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 if (errorDetection.CheckError(gazeAngles))
                 {
                     Debug.Log("Detect false selection.");
+                    falseSelectionDetected = true;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
                     break;
                 }
                 else 
                 {
                     Debug.Log("Detect correct selection.");
+                    falseSelectionDetected = false;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
                 }
             }
