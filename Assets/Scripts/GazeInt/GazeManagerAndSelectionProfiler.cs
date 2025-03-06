@@ -74,6 +74,13 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
                 gazeInteractor.rayOriginTransform.forward * 3); //3m away max....?
             actGazeRayLocal = new Ray(gazeInteractor.rayOriginTransform.localPosition, (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3);
+
+            //from chatgpt
+            /*actGazeRayLocal = new Ray(
+                gazeInteractor.rayOriginTransform.localPosition, // Local position (relative to parent)
+                (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3 // Local forward direction, 3 meters away
+            );*/
+
             //Hopefully that is the local and is correct. 
             //Debug.Log("access gaze");
 
