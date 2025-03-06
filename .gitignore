@@ -28,6 +28,11 @@
 # Visual Studio cache directory
 .vs/
 
+# Build folders -- Sometimes screws up intellisense in VS
+bin/
+obj/
+Temp/
+
 # Gradle cache directory
 .gradle/
 
