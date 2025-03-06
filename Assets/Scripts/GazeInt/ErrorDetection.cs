@@ -63,13 +63,33 @@ public class ErrorDetection : MonoBehaviour
         }*/
         model = ModelLoader.Load(modelSourceHeadAndGaze);
         th = thHeadAndGaze;
+        if (model == null)
+        {
+            Debug.LogError("Model is NULL! Check if it's assigned properly.");
+        }
+
         Debug.Log("Load head and gaze model.");
         worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, model);
+        if (worker == null)
+        {
+            Debug.LogError("Worker creation failed.");
+            return;  // Don't proceed if worker creation failed
+        }
+
+        Debug.Log("Worker created successfully.");
+
     }
 
 
-    public bool CheckError(List<float> angles)
+    public bool CheckError(List<float> angles)//not even getting here currently
     {
+        if (worker == null)
+        {
+            Debug.LogError("Worker is not initialized! Can't check error. Returning false.");
+            return false;  // Return early if worker is not initialized
+        }
+        Debug.Log("Checking error");
+
         float[] anglesArray = angles.ToArray();
         int[] shape = new int[] { 1, 1, anglesArray.Length };
         Tensor input = new Tensor(shape, anglesArray);

@@ -60,6 +60,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     {
         Debug.Log("Gaze Manager start() called");
         cam = Camera.main;//not sure where this comes in anymore
+        errorDetection = GameObject.Find("ErrorDetectionModel").GetComponent<ErrorDetection>();
 
     }
 
@@ -74,7 +75,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             //Hopefully that is the local and is correct. 
             //Debug.Log("access gaze");
 
-            //UpdateAngleList(); //TODO: make sure goes here
+            UpdateAngleList(); //TODO: make sure goes here
 
             CheckGazeFixation();
         }
@@ -127,6 +128,11 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         {
                             select_ = true;
                             OnSelect?.Invoke(hitObject);
+                            if (errorDetection == null)
+                            {
+                                Debug.LogError("ErrorDetection is not assigned in the Manager script!");
+                                return; // Don't start the coroutine if errorDetection is null
+                            }
                             StartCoroutine(RunSelectionError());
                         }
                     }
@@ -196,18 +202,26 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     //code from bjorn's laser script going here, gets called when selection happens.. 
     private void UpdateAngleList()
     {
-        Debug.Log("Angle update getting called"); //originally is called everyframe
-        Vector3 newGV = actGazeRayLocal.direction;
+        //Debug.Log("Angle update getting called"); //originally is called everyframe
+        Vector3 newGV = actGazeRay.direction;//ORIG HAS TO BE THIS actGazeRayLocal.direction; //Local issues?
+        Debug.Log("New GV: " + newGV.ToString());
+        Debug.Log("Last GV: " + lastGV.ToString());
         float angle;
 
         if (gazeAngles.Count == 0) angle = 0f;
         else angle = Vector3.Angle(lastGV, newGV);
+        //Debug.Log("Angle: " + angle.ToString());
 
         lastGV = newGV;
 
         gazeAngles.Add(angle);
-        if (gazeAngles.Count > errorDetection.seqLength)
-        {
+        
+
+        //Debug.Log("GazeAngles: " + gazeAngles.Count.ToString());
+       
+        if (gazeAngles.Count > errorDetection.seqLength)//todo fix this so not hardcoded
+        {//Does sequence length exist?
+         // no doesn't exist for some reason, throwing a null. 
             gazeAngles.RemoveAt(0);
         }
     }
@@ -219,7 +233,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         while (selectionTimer < (timeToDestroy + 0.05f))
         {
             selectionTimer += Time.deltaTime;
-            if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms
+            if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms //also not called properly
             {
                 if (errorDetection.CheckError(gazeAngles))
                 {
