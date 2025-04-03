@@ -1,5 +1,7 @@
 # Maia_gaze4holo
 Gaze based interaction and error detection (TCN autoencoder) for hololens2 under MAIA research project
+- 3D hologram objects can get selected: Stable
+- Objects detected by a pretrained YOLO model: Unstable 
 
 # Research supported by
 This research is supported by European Union's Horizon 2020 research and innovation program under grant agreement No.951910 (MAIA)
