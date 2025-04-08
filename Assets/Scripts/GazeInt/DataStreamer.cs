@@ -3,38 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct StreamData
+{
+    public string timestamp;
+    public Vector3? localGaze;
+    public Vector3? worldGaze;
+    public bool? isCorrect;
+    public string objectName;
+
+    public StreamData(string timestamp, Vector3? localGaze, Vector3? worldGaze, bool? isCorrect, GameObject lookedAt)
+    {
+        this.timestamp = timestamp;
+        this.localGaze = localGaze;
+        this.worldGaze = worldGaze;
+        this.isCorrect = isCorrect;
+        this.objectName = lookedAt ? lookedAt.name : "None";
+    }
+
+    public override string ToString()
+    {
+        return $"{timestamp}," +
+               $"{localGaze?.x.ToString("F2") ?? "None"}," +
+               $"{localGaze?.y.ToString("F2") ?? "None"}," +
+               $"{localGaze?.z.ToString("F2") ?? "None"}," +
+               $"{worldGaze?.x.ToString("F2") ?? "None"}," +
+               $"{worldGaze?.y.ToString("F2") ?? "None"}," +
+               $"{worldGaze?.z.ToString("F2") ?? "None"}," +
+               $"{(isCorrect.HasValue ? isCorrect.ToString() : "None")}," +
+               $"{objectName}";
+    }
+}
+
 public class DataStreamer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static DataStreamer _instance;
+    public static DataStreamer Instance
     {
-        // initalize something, like a file or ros package, or both?
-        /*
-         * string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
-         filePath = Path.Combine(Application.persistentDataPath, $"gazeData_{timeStamp}.csv");
-         // Optional: Write header line
-         File.WriteAllText(filePath, "Time,X,Y,Z\n");
-        */
+        get
+        {
+            if (_instance == null)
+            {
+                var go = new GameObject("DataStreamer");
+                _instance = go.AddComponent<DataStreamer>();
+                DontDestroyOnLoad(go);
+            }
+            return _instance;
+        }
     }
 
-    void Update()
+    public void Stream(StreamData data)
     {
-        // Collect some data per frame
-        Vector3 data = transform.position;
-        string time = DateTime.Now.ToString("HH:mm:ss.fff"); //currently not safe if other parts of the code buffer or lag
-
-        // Send data to self
-        ReceiveData(data, time);
-    }
-
-    void ReceiveData(Vector3 position, string timestamp)
-    {
-        string line = $"{timestamp},{position.x},{position.y},{position.z}";
-
-        // Log to console (optional)
-        Debug.Log("Writing: " + line);
-
-        // do something else? like Append to file or send as ros package
-        //File.AppendAllText(filePath, line + "\n");
+        Debug.Log("[DataStreamer] " + data.ToString());
+        // Later:
+        // - Send to ROS publisher
+        // - Write to CSV
+        // - Emit UnityEvent or notify subscribers
     }
 }
