@@ -35,7 +35,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public static event Action<GameObject> OnSelect;
     public static event Action<GameObject> SelectionError;
     private GameObject lastDwelledObject;
-    
+    private GameObject hitObject = null;  // making this available here, but see if last dwellable object is doing/ how often it's updating
+
     private bool select_ = false;
     private bool falseSelectionDetected = false; //TODO: check logic of this hold up
 
@@ -90,8 +91,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
                 localGaze: gazeInteractor.rayOriginTransform.localPosition,
                 worldGaze: gazeInteractor.rayOriginTransform.position,  
-                falseSelect: falseSelectionDetected
-                //selectedObject: null
+                falseSelect: falseSelectionDetected,
+                selectedObject: hitObject != null ? hitObject.name : ""
             );
             DataStreamer.Instance.Stream(datastream);
         }
@@ -113,8 +114,9 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 return; 
             }
 
-           
-            GameObject hitObject = gazeHit.collider.gameObject;
+
+            //GameObject hitObject = gazeHit.collider.gameObject; //originally defined first here, but harder to integrate with the data streamer
+            hitObject = gazeHit.collider.gameObject; 
             //Debug.Log("Raycast hit: " + hitObject.name);
 
             if (hitObject != lastDwelledObject)
@@ -163,6 +165,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             }   
         }
         else {
+            hitObject = null; 
             ClearFixation();
         }
         
