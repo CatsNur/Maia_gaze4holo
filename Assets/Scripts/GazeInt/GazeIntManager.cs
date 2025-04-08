@@ -11,6 +11,10 @@ nod //3, all out commented...
 
 public class GazeIntManager : MonoBehaviour
 {
+    /*
+     * NOT BEING USED ANY MORE, RELICS OF ANOTHER TIME WHEN GAMING WAS COOL
+    */
+
     [SerializeField] private GazeInteractor gazeInteractor;
     //[SerializeField]TODO
     //public SelectionOptions selectOption;
