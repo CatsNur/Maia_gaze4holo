@@ -46,7 +46,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
     private float timeToDestroy = 0.25f; //time to destroy the target, which we're not currently doing
 
-    public bool Select() //not being used currently
+    public bool Select() //not being used currently...
     {
         if (select_)
         {
@@ -84,6 +84,16 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             UpdateAngleList(); //TODO: confirm this is where this should be called
 
             CheckGazeFixation();
+
+            //test if our streamer goes here safely
+            var datastream = new StreamData(
+                timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
+                localGaze: gazeInteractor.rayOriginTransform.localPosition,
+                worldGaze: gazeInteractor.rayOriginTransform.position,  
+                isSelected: ,
+                lookedAt: null
+            );
+            DataStreamer.Instance.Stream(datastream);
         }
     }
 
