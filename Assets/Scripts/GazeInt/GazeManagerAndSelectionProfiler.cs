@@ -217,8 +217,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     {
         //Debug.Log("Angle update getting called"); //originally is called everyframe
         Vector3 newGV = actGazeRayLocal.direction;//for htc vive pro eye it's actGazeRayLocal.direction; 
-        Debug.Log("New GV: " + newGV.ToString());
-        Debug.Log("Last GV: " + lastGV.ToString());
+        //Debug.Log("New GV: " + newGV.ToString());
+        //Debug.Log("Last GV: " + lastGV.ToString());
         float angle;
 
         if (gazeAngles.Count == 0) angle = 0f;
@@ -249,14 +249,14 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             {
                 if (errorDetection.CheckError(gazeAngles))
                 {
-                    Debug.Log("Detect false selection.");
+                    Debug.Log("Detected false selection.");
                     falseSelectionDetected = true;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
                     break;
                 }
                 else 
                 {
-                    Debug.Log("Detect correct selection.");
+                    Debug.Log("Detected correct selection.");
                     falseSelectionDetected = false;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
                 }
