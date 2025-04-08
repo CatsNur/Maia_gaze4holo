@@ -5,16 +5,16 @@ public struct StreamData
     public string timestamp;
     public Vector3? localGaze;
     public Vector3? worldGaze;
-    public bool? isSelected;
-    public string lookedAt;
+    public bool? falseSelect;
+    public string selectedObject;
 
-    public StreamData(string timestamp, Vector3? localGaze, Vector3? worldGaze, bool isSelected = false, string lookedAt = "")
+    public StreamData(string timestamp, Vector3? localGaze, Vector3? worldGaze, bool falseSelect = false, string selectedObject = "")
     {
         this.timestamp = timestamp;
         this.localGaze = localGaze;
         this.worldGaze = worldGaze;
-        this.isSelected = isSelected;
-        this.lookedAt = lookedAt;
+        this.falseSelect = falseSelect;
+        this.selectedObject = selectedObject;
     }
 
     public override string ToString()
@@ -26,7 +26,7 @@ public struct StreamData
                $"{worldGaze?.x.ToString("F2") ?? "None"}," +
                $"{worldGaze?.y.ToString("F2") ?? "None"}," +
                $"{worldGaze?.z.ToString("F2") ?? "None"}," +
-               $"{(isSelected.HasValue ? isSelected.ToString() : "None")}," +
-               $"{(string.IsNullOrEmpty(lookedAt) ? "None" : lookedAt)}";
+               $"{(falseSelect.HasValue ? falseSelect.ToString() : "None")}," +
+               $"{(string.IsNullOrEmpty(selectedObject) ? "None" : selectedObject)}";
     }
 }

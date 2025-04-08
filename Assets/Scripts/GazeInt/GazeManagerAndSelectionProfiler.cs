@@ -89,9 +89,9 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             var datastream = new StreamData(
                 timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
                 localGaze: gazeInteractor.rayOriginTransform.localPosition,
-                worldGaze: gazeInteractor.rayOriginTransform.position//,  
-                //isSelected: ,
-                //lookedAt: null
+                worldGaze: gazeInteractor.rayOriginTransform.position,  
+                falseSelect: falseSelectionDetected
+                //selectedObject: null
             );
             DataStreamer.Instance.Stream(datastream);
         }

@@ -93,12 +93,12 @@ public class ErrorDetection : MonoBehaviour
         float[] anglesArray = angles.ToArray();
         int[] shape = new int[] { 1, 1, anglesArray.Length };
         Tensor input = new Tensor(shape, anglesArray);
-        Debug.Log("Input: " + input.ToString());
+        //Debug.Log("Input: " + input.ToString());
 
         worker.Execute(input);
 
         Tensor output = worker.PeekOutput();
-        Debug.Log("Output: " + output.ToString());
+        //Debug.Log("Output: " + output.ToString());
         float[] outArray = output.ToReadOnlyArray();
 
         mse = 0;
@@ -109,7 +109,7 @@ public class ErrorDetection : MonoBehaviour
         }
         mse /= anglesArray.Length;
         
-        Debug.Log("Length angles: " + anglesArray.Length.ToString() + "; Length outArray: " + outArray.Length.ToString() + "; MSE: " + mse.ToString());
+        //Debug.Log("Length angles: " + anglesArray.Length.ToString() + "; Length outArray: " + outArray.Length.ToString() + "; MSE: " + mse.ToString());
 
         bool error = false;
         if (mse > th)
