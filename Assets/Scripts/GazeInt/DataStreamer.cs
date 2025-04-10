@@ -6,6 +6,7 @@ using UnityEngine;
 public class DataStreamer : MonoBehaviour
 {
     private static DataStreamer _instance;
+    private TextUpdater textUpdater;
     public static DataStreamer Instance
     {
         get
@@ -22,7 +23,14 @@ public class DataStreamer : MonoBehaviour
 
     public void Stream(StreamData data)
     {
+        
+
         Debug.Log("[DataStreamer] " + data.ToString());
+        textUpdater = FindObjectOfType<TextUpdater>();
+        if (textUpdater != null)
+        {
+            textUpdater.GetLiveText("[DataStreamer] " + data.ToString());
+        }
         // Later:
         // - Send to ROS publisher
         // - Write to CSV

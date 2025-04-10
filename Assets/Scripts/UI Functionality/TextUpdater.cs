@@ -13,19 +13,23 @@ public class TextUpdater : MonoBehaviour
     }*/
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if (targetText != null)
         {
             targetText.text = GetLiveText();
         }
-    }
+    }*/
 
     // Replace this with whatever you're tracking
-    private string GetLiveText()
+    public void GetLiveText(string incomingStream)
     {
+        if (targetText != null)
+        {
+            targetText.text = incomingStream;
+        }
         // Example: show camera position and time
-        Vector3 camPos = Camera.main.transform.position;
-        return $"Camera Position:\nX: {camPos.x:F2} Y: {camPos.y:F2} Z: {camPos.z:F2}\nTime: {Time.time:F2}s";
+        //Vector3 camPos = Camera.main.transform.position;
+        //return $"Camera Position:\nX: {camPos.x:F2} Y: {camPos.y:F2} Z: {camPos.z:F2}\nTime: {Time.time:F2}s";
     }
 }
