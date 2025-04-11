@@ -1,4 +1,92 @@
+using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
+//**using EyeTrackingDemo;
+
+using System.IO;
+using System.Runtime.InteropServices.ComTypes;
+using UnityEngine.Windows;
+
+#if !UNITY_EDITOR
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Windows.Networking;
+    using Windows.Networking.Sockets;
+    using Windows.Storage.Streams;
+#endif
+
+public class TCPLink : MonoBehaviour
+{
+    private static TCPLink _instance;
+    public static TCPLink Instance => _instance;
+
+#if !UNITY_EDITOR
+    private Windows.Storage.Streams.DataWriter writer;
+#endif
+
+    void Awake()
+    {
+        if (_instance == null) _instance = this;
+        else Destroy(gameObject);
+    }
+
+    public bool IsConnected
+    {
+#if !UNITY_EDITOR
+        get => writer != null;
+#else
+        get => false;
+#endif
+    }
+
+    public void SendMessage(string message)
+    {
+#if !UNITY_EDITOR
+        if (writer != null)
+        {
+            _ = SendAsync(message); // fire and forget
+        }
+#endif
+    }
+
+#if !UNITY_EDITOR
+    private async Task SendAsync(string message)
+    {
+        try
+        {
+            writer.WriteString(message);
+            await writer.StoreAsync();
+            writer.DetachStream(); // optional
+        }
+        catch (Exception e)
+        {
+            Debug.Log("[TCPLink] Send error: " + e.Message);
+            writer = null;
+        }
+    }
+
+    private async void Listener_Sender(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
+    {
+        try
+        {
+            writer = new Windows.Storage.Streams.DataWriter(args.Socket.OutputStream);
+            Debug.Log("[TCPLink] TCP connection ready.");
+        }
+        catch (Exception e)
+        {
+            Debug.Log("[TCPLink] Connection failed: " + e.Message);
+            writer = null;
+        }
+    }
+#endif
+}
+
+
+/*FROM Gianni
+ * using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +129,7 @@ public class TCPLink : MonoBehaviour
         //**eyetracker = GetComponent<EyeTracker>();
         // Initialize DataStreamer to handle incoming data
         dataStreamer = DataStreamer.Instance; //todo figure out how we just recieve the packaged data struct...
+
 #if !UNITY_EDITOR
         listener = new StreamSocketListener();
         port = "9090";
@@ -121,15 +210,15 @@ public class TCPLink : MonoBehaviour
     }
 
 #endif
-    /*
-    void Update()
-    {
-        LOG(_input + ErrorLog);
-    }
+    
+    //void Update()
+    //{
+    //    LOG(_input + ErrorLog);
+    //}
 
-    void LOG(string msg)
-    {
-        debugLogText.GetComponent<TextMesh>().text = "\n " + msg;
-    }
-    */
-}
+    //void LOG(string msg)
+    //{
+    //    debugLogText.GetComponent<TextMesh>().text = "\n " + msg;
+    //}
+    
+}*/

@@ -35,5 +35,10 @@ public class DataStreamer : MonoBehaviour
         // - Send to ROS publisher
         // - Write to CSV
         // - Emit UnityEvent or notify subscribers
+        // Send to TCPLink if active
+        if (TCPLink.Instance != null && TCPLink.Instance.IsConnected)
+        {
+            TCPLink.Instance.SendMessage(data.ToString());
+        }
     }
 }
