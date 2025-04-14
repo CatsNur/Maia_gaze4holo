@@ -48,7 +48,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
     private float timeToDestroy = 0.25f; //time to destroy the target, which we're not currently doing
 
-    public bool Select() //not being used currently...need to make a selected object, not just a hit object
+    public bool Select()
     {
         //if (!select_ || hitObject == null || selectionInProgress) return false;
         //selectionInProgress = true;
