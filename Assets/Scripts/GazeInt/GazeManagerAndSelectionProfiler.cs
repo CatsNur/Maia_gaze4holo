@@ -57,7 +57,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         if (!select_ || hitObject == null) return false;
 
         OnSelect?.Invoke(hitObject);
-        selectedObject = hitObject; // Store the selected object
+        selectedObject = hitObject;
         //TODO: handle selecting an object and looking away
         //(like you would casually loko around or talk to someone,
         //not necessarily the autoencoder stepping in)
@@ -105,7 +105,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         DataStreamer.Instance.Stream(datastream);
 
         /* potential if we revamp that function so chunk of code is there*/
-         if (Select())
+        if (Select())
         {
             Debug.Log("Selection occurred");
         }
