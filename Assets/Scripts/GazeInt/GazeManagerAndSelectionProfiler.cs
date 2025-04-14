@@ -35,7 +35,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public static event Action<GameObject> OnSelect;
     public static event Action<GameObject> SelectionError;
     private GameObject lastDwelledObject;
-    private GameObject hitObject = null;  // making this available here, but see if last dwellable object is doing/ how often it's updating
+    private GameObject hitObject = null;
+    private GameObject selectedObject = null;
 
     private bool select_ = false;
     private bool falseSelectionDetected = false; //TODO: check logic of this hold up
@@ -47,15 +48,25 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
     private float timeToDestroy = 0.25f; //time to destroy the target, which we're not currently doing
 
-    public bool Select() //not being used currently...
+    public bool Select()
     {
-        if (select_)
-        {
-            Debug.Log("Should select");
-            select_ = false;
-            return true;
-        }
-        return false;
+        //if (!select_ || hitObject == null || selectionInProgress) return false;
+        //selectionInProgress = true;
+        //StartCoroutine(ResetSelectionFlag());
+
+        if (!select_ || hitObject == null) return false;
+
+        OnSelect?.Invoke(hitObject);
+        selectedObject = hitObject;
+        //TODO: handle selecting an object and looking away
+        //(like you would casually loko around or talk to someone,
+        //not necessarily the autoencoder stepping in)
+
+        falseSelectionDetected = false;
+        StartCoroutine(RunSelectionError());
+
+        select_ = false;
+        return true;
     }
 
     // Start is called before the first frame update
@@ -64,44 +75,46 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         Debug.Log("Gaze Manager and profiler start() called");
         cam = Camera.main;
         errorDetection = GameObject.Find("ErrorDetectionModel").GetComponent<ErrorDetection>();
+        if (errorDetection == null)
+            Debug.LogError("ErrorDetection component not found.");
+            //TODO: code proceeds without model...
 
     }
 
     // Update is called once per frame, for eye tracker or for scene...?
     void Update()
     {
-        if (cam != null)
+        if (cam == null) return;
+        
+        actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
+            gazeInteractor.rayOriginTransform.forward * 3); //3m away max....?
+        actGazeRayLocal = new Ray(gazeInteractor.rayOriginTransform.localPosition, (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3);
+
+        UpdateAngleList(); 
+
+        CheckGazeFixation();
+
+        //test if our streamer goes here safely, it does except for the false selection
+        var datastream = new StreamData(
+            timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
+            localGaze: gazeInteractor.rayOriginTransform.localPosition,
+            worldGaze: gazeInteractor.rayOriginTransform.position,  
+            falseSelect: falseSelectionDetected,
+            selectedObject: selectedObject != null ? selectedObject.name : ""
+        );
+        DataStreamer.Instance.Stream(datastream);
+
+        /* potential if we revamp that function so chunk of code is there*/
+        if (Select())
         {
-            actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
-                gazeInteractor.rayOriginTransform.forward * 3); //3m away max....?
-            actGazeRayLocal = new Ray(gazeInteractor.rayOriginTransform.localPosition, (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3);
-
-            //from chatgpt, not working?
-            /*actGazeRayLocal = new Ray(
-                gazeInteractor.rayOriginTransform.localPosition, // Local position (relative to parent)
-                (gazeInteractor.rayOriginTransform.localRotation * Vector3.forward) * 3 // Local forward direction, 3 meters away
-            );*/
-
-            UpdateAngleList(); //TODO: confirm this is where this should be called
-
-            CheckGazeFixation();
-
-            //test if our streamer goes here safely
-            var datastream = new StreamData(
-                timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
-                localGaze: gazeInteractor.rayOriginTransform.localPosition,
-                worldGaze: gazeInteractor.rayOriginTransform.position,  
-                falseSelect: falseSelectionDetected,
-                selectedObject: hitObject != null ? hitObject.name : ""
-            );
-            DataStreamer.Instance.Stream(datastream);
+            Debug.Log("Selection occurred");
         }
+
     }
 
     private void CheckGazeFixation() {
         //precursor to selection.... head alignment to gaze confirms the selection. 
-        //Debug.Log("CheckFixation");
-        RaycastHit gazeHit;
+        RaycastHit gazeHit; //todo: provide visualzation option
 
         if (Physics.Raycast(actGazeRay, out gazeHit, Mathf.Infinity))
         {
@@ -114,8 +127,6 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 return; 
             }
 
-
-            //GameObject hitObject = gazeHit.collider.gameObject; //originally defined first here, but harder to integrate with the data streamer
             hitObject = gazeHit.collider.gameObject; 
             //Debug.Log("Raycast hit: " + hitObject.name);
 
@@ -145,22 +156,20 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
+                            //Debug.Log("Gaze and head aligned, selecting object: " + hitObject.name);
+                            /* THIS CHUNK Moves to Select()
+                            falseSelectionDetected = false;
                             OnSelect?.Invoke(hitObject);
+                            Select();
                             if (errorDetection == null)
                             {
                                 Debug.LogError("ErrorDetection is not assigned in the Manager script!");
                                 return; // Don't start the coroutine if errorDetection is null, pretend nothing happened
                             }
-                            StartCoroutine(RunSelectionError());
-                            //if selection false
-                            if (falseSelectionDetected)
-                            {
-                                SelectionError?.Invoke(hitObject);
-                            }
+                            StartCoroutine(RunSelectionError());*/
+
                         }
                     }
-
-                    //fixationTime_ = 0.0f; //do i need this? currently no, maybe if we have a dwel paradigm
                 }
             }   
         }
@@ -171,18 +180,24 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         
     }
     private void ClearFixation() {
+        //moreso handleing dwells
         if (lastDwelledObject != null) {
             OnDwellExit?.Invoke(lastDwelledObject);
             lastDwelledObject = null;
-            falseSelectionDetected = false;//not sure if necessary here
+            //falseSelectionDetected = false;//premature potentially
+            //select_ = false;
+            //Select(); //not sure if necessary here
         }
     }
 
     private void ResetFixation()
     {
+        //when you swap target objects
         fixationTimer = 0f;
         isFixated = false;
-        falseSelectionDetected = false;
+        //falseSelectionDetected = false;
+        //select_ = false;
+        //Select();
     }
     private bool HeadAligned(RaycastHit gH,RaycastHit hH) {
         // takes hit colliders
@@ -190,38 +205,12 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
     }
 
-    /*public bool IsFixated() //not using currently
-    {
-        return isFixated;
-    }*/
-
-    /*public GameObject GetFixatedObject()
-    {//Don't think we need this anymore with the actions
-        return isFixated ? fixatedObject_ : null;
-    }*/
-
-    /*public Vector3 GetHitPoint() //not using currently
-    {
-        return isFixated ? lastGazeHitPoint : Vector3.zero;
-    }*/
-
-
-    /*public Ray GetCombinedGazeRay() //not using currently
-    {
-        //Debug.Log(gazeInteractor.rayOriginTransform.position);
-        actGazeRay = new Ray(gazeInteractor.rayOriginTransform.position,
-                gazeInteractor.rayOriginTransform.forward);
-        return actGazeRay;
-    }*/
-
 
     //code from bjorn's laser script going here, gets called when selection happens.. 
     private void UpdateAngleList()
     {
         //Debug.Log("Angle update getting called"); //originally is called everyframe
-        Vector3 newGV = actGazeRayLocal.direction;//for htc vive pro eye it's actGazeRayLocal.direction; 
-        //Debug.Log("New GV: " + newGV.ToString());
-        //Debug.Log("Last GV: " + lastGV.ToString());
+        Vector3 newGV = actGazeRayLocal.direction;
         float angle;
 
         if (gazeAngles.Count == 0) angle = 0f;
@@ -231,9 +220,6 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         lastGV = newGV;
 
         gazeAngles.Add(angle);
-        
-
-        //Debug.Log("GazeAngles: " + gazeAngles.Count.ToString());
        
         if (gazeAngles.Count > errorDetection.seqLength)//todo fix this so not hardcoded
         {
@@ -250,7 +236,21 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             selectionTimer += Time.deltaTime;
             if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms //also not called properly?
             {
-                if (errorDetection.CheckError(gazeAngles))
+                if (errorDetection.CheckError(gazeAngles)) //TODO: For testing trigger this with a keypress
+                {
+                    Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
+                    falseSelectionDetected = true;
+                    SelectionError?.Invoke(hitObject);
+                }
+                else
+                {
+                    Debug.Log($"[ErrorDetection] Correct selection on {hitObject?.name}");
+                    falseSelectionDetected = false;
+                }
+
+                break; // Exit coroutine early after decision
+
+                /*ORIG if (errorDetection.CheckError(gazeAngles))
                 {
                     Debug.Log("Detected false selection.");
                     falseSelectionDetected = true;
@@ -262,10 +262,17 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     Debug.Log("Detected correct selection.");
                     falseSelectionDetected = false;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
-                }
+                } END ORIG*/
             }
             yield return null;
         }
         
      }
+    /*
+    private IEnumerator ResetSelectionFlag()
+    {
+        yield return new WaitForSeconds(0.25f);
+        selectionInProgress = false;
+    }
+     */
 }
