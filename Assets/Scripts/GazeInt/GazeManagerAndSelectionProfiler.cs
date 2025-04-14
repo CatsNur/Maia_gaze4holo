@@ -177,10 +177,11 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         
     }
     private void ClearFixation() {
+        //moreso handleing dwells
         if (lastDwelledObject != null) {
             OnDwellExit?.Invoke(lastDwelledObject);
             lastDwelledObject = null;
-            falseSelectionDetected = false;//not sure if necessary here
+            //falseSelectionDetected = false;//premature potentially
             select_ = false;
             //Select(); //not sure if necessary here
         }
@@ -188,6 +189,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
     private void ResetFixation()
     {
+        //when you swap target objects
         fixationTimer = 0f;
         isFixated = false;
         falseSelectionDetected = false;
