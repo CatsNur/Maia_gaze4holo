@@ -47,7 +47,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
     private float timeToDestroy = 0.25f; //time to destroy the target, which we're not currently doing
 
-    public bool Select() //not being used currently...
+    /*public bool Select() //not being used currently...
     {
         if (select_)
         {
@@ -56,7 +56,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             return true;
         }
         return false;
-    }
+    }*/
 
     // Start is called before the first frame update
     void Start()
@@ -86,7 +86,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
             CheckGazeFixation();
 
-            //test if our streamer goes here safely
+            //test if our streamer goes here safely, it does except for the false selection
             var datastream = new StreamData(
                 timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
                 localGaze: gazeInteractor.rayOriginTransform.localPosition,
@@ -156,6 +156,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                             if (falseSelectionDetected)
                             {
                                 SelectionError?.Invoke(hitObject);
+                                select_ = false;
                             }
                         }
                     }
@@ -175,6 +176,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             OnDwellExit?.Invoke(lastDwelledObject);
             lastDwelledObject = null;
             falseSelectionDetected = false;//not sure if necessary here
+            select_ = false;
         }
     }
 
