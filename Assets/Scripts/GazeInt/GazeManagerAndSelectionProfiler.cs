@@ -35,7 +35,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     public static event Action<GameObject> OnSelect;
     public static event Action<GameObject> SelectionError;
     private GameObject lastDwelledObject;
-    private GameObject hitObject = null;  // making this available here, but see if last dwellable object is doing/ how often it's updating
+    private GameObject hitObject = null;
+    private GameObject selectedObject = null;
 
     private bool select_ = false;
     private bool falseSelectionDetected = false; //TODO: check logic of this hold up
@@ -47,16 +48,17 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private Vector3 lastGV = Vector3.zero; //could this be covered by "lastGazeHitPoint"?
     private float timeToDestroy = 0.25f; //time to destroy the target, which we're not currently doing
 
-    /*public bool Select() //not being used currently...
+    public bool Select() //not being used currently...need to make a selected object, not just a hit object
     {
         if (select_)
         {
-            Debug.Log("Should select");
-            select_ = false;
+            Debug.Log("getting selected object");
+            selectedObject = hitObject;
             return true;
         }
+        selectedObject = null;
         return false;
-    }*/
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -92,7 +94,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 localGaze: gazeInteractor.rayOriginTransform.localPosition,
                 worldGaze: gazeInteractor.rayOriginTransform.position,  
                 falseSelect: falseSelectionDetected,
-                selectedObject: hitObject != null ? hitObject.name : ""
+                selectedObject: selectedObject != null ? selectedObject.name : ""
             );
             DataStreamer.Instance.Stream(datastream);
         }
@@ -147,6 +149,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                             select_ = true;
                             falseSelectionDetected = false;
                             OnSelect?.Invoke(hitObject);
+                            Select();
                             if (errorDetection == null)
                             {
                                 Debug.LogError("ErrorDetection is not assigned in the Manager script!");
@@ -179,6 +182,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             lastDwelledObject = null;
             falseSelectionDetected = false;//not sure if necessary here
             select_ = false;
+            //Select(); //not sure if necessary here
         }
     }
 
@@ -187,6 +191,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         fixationTimer = 0f;
         isFixated = false;
         falseSelectionDetected = false;
+        select_ = false;
+        Select();
     }
     private bool HeadAligned(RaycastHit gH,RaycastHit hH) {
         // takes hit colliders
