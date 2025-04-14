@@ -145,6 +145,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
+                            falseSelectionDetected = false;
                             OnSelect?.Invoke(hitObject);
                             if (errorDetection == null)
                             {
@@ -152,12 +153,13 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                                 return; // Don't start the coroutine if errorDetection is null, pretend nothing happened
                             }
                             StartCoroutine(RunSelectionError());
-                            //if selection false
-                            if (falseSelectionDetected)
+                            //if selection false, NOW the check is in the selection error function
+                            /*if (falseSelectionDetected)
                             {
+                                //this could be unreliable, condsider moving
                                 SelectionError?.Invoke(hitObject);
                                 select_ = false;
-                            }
+                            }*/
                         }
                     }
 
@@ -252,7 +254,22 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             selectionTimer += Time.deltaTime;
             if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms //also not called properly?
             {
-                if (errorDetection.CheckError(gazeAngles))
+                bool isFalseSelection = errorDetection.CheckError(gazeAngles);
+                falseSelectionDetected = isFalseSelection;
+
+                if (isFalseSelection) //TODO: For testing trigger this with a keypress
+                {
+                    Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
+                    SelectionError?.Invoke(hitObject);
+                }
+                else
+                {
+                    Debug.Log($"[ErrorDetection] Correct selection on {hitObject?.name}");
+                }
+
+                break; // Exit coroutine early after decision
+
+                /*ORIG if (errorDetection.CheckError(gazeAngles))
                 {
                     Debug.Log("Detected false selection.");
                     falseSelectionDetected = true;
@@ -264,7 +281,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     Debug.Log("Detected correct selection.");
                     falseSelectionDetected = false;
                     //errorDetectionRecorder.AddLine(correctTarget, errorDetection.GetLastMSE(), errorDetection.Threshold);
-                }
+                } END ORIG*/
             }
             yield return null;
         }
