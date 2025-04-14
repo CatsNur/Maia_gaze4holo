@@ -236,11 +236,11 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             selectionTimer += Time.deltaTime;
             if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms //also not called properly?
             {
-                if (errorDetection.CheckError(gazeAngles)) //TODO: For testing trigger this with a keypress
+                if (errorDetection.CheckError(gazeAngles) || (Input.GetKeyDown(KeyCode.Backspace))) //TODO: For testing trigger this with a keypress
                 {
                     Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
                     falseSelectionDetected = true;
-                    SelectionError?.Invoke(hitObject);
+                    SelectionError?.Invoke(hitObject); //happening wayy to fast...
                 }
                 else
                 {
