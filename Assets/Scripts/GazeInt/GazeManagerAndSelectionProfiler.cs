@@ -94,20 +94,28 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
 
         CheckGazeFixation();
 
-        //test if our streamer goes here safely, it does except for the false selection
-        var datastream = new StreamData(
+        //here if you want to stream data every frame
+        /*var datastream = new StreamData(
             timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
             localGaze: gazeInteractor.rayOriginTransform.localPosition,
             worldGaze: gazeInteractor.rayOriginTransform.position,  
             falseSelect: falseSelectionDetected,
             selectedObject: selectedObject != null ? selectedObject.name : ""
         );
-        DataStreamer.Instance.Stream(datastream);
+        DataStreamer.Instance.Stream(datastream);*/
 
-        /* potential if we revamp that function so chunk of code is there*/
+        
         if (Select())
         {
             Debug.Log("Selection occurred");
+            var datastream = new StreamData(
+                timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
+                localGaze: gazeInteractor.rayOriginTransform.localPosition,
+                worldGaze: gazeInteractor.rayOriginTransform.position,
+                falseSelect: falseSelectionDetected,
+                selectedObject: selectedObject != null ? selectedObject.name : ""
+            );
+            DataStreamer.Instance.Stream(datastream);
         }
 
     }
@@ -241,6 +249,16 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
                     falseSelectionDetected = true;
                     SelectionError?.Invoke(hitObject); //happening wayy to fast...
+
+                    var datastream = new StreamData(
+                        //does this need to go before the ?.Invoke()?
+                        timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
+                        localGaze: gazeInteractor.rayOriginTransform.localPosition,
+                        worldGaze: gazeInteractor.rayOriginTransform.position,
+                        falseSelect: falseSelectionDetected,
+                        selectedObject: selectedObject != null ? selectedObject.name : ""
+                    );
+                    DataStreamer.Instance.Stream(datastream);
                 }
                 else
                 {
