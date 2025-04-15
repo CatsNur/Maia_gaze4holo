@@ -110,8 +110,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             Debug.Log("Selection occurred");
             var datastream = new StreamData(
                 timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
-                localGaze: gazeInteractor.rayOriginTransform.localPosition,
-                worldGaze: gazeInteractor.rayOriginTransform.position,
+                gazePosition: actGazeRay.origin,
+                gazeDirection: actGazeRay.direction,
                 falseSelect: falseSelectionDetected,
                 selectedObject: selectedObject != null ? selectedObject.name : ""
             );
@@ -218,7 +218,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
     private void UpdateAngleList()
     {
         //Debug.Log("Angle update getting called"); //originally is called everyframe
-        Vector3 newGV = actGazeRayLocal.direction;
+        Vector3 newGV = actGazeRay.direction; //should this be actGazeRay? local is always 0,0,0
         float angle;
 
         if (gazeAngles.Count == 0) angle = 0f;
@@ -253,8 +253,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     var datastream = new StreamData(
                         //does this need to go before the ?.Invoke()?
                         timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
-                        localGaze: gazeInteractor.rayOriginTransform.localPosition,
-                        worldGaze: gazeInteractor.rayOriginTransform.position,
+                        gazePosition: actGazeRay.origin,
+                        gazeDirection: actGazeRay.direction,
                         falseSelect: falseSelectionDetected,
                         selectedObject: selectedObject != null ? selectedObject.name : ""
                     );
