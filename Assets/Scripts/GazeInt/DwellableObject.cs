@@ -85,8 +85,8 @@ public class DwellableObject : MonoBehaviour
     {
         if (obj == gameObject && !hasSelected)
         {
-            Debug.Log("Selected");
-            //lets change Material to orange
+            Debug.Log("False Selected");
+            //lets change Material to red
             objRenderer.material = selectedMaterial;
             hasSelected = false;
         }
