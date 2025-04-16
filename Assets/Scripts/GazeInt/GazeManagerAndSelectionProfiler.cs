@@ -247,8 +247,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 if (errorDetection.CheckError(gazeAngles) || (Input.GetKeyDown(KeyCode.Backspace))) //TODO: For testing trigger this with a keypress
                 {
                     Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
+                    SelectionError?.Invoke(hitObject); //This is not happening
                     falseSelectionDetected = true;
-                    SelectionError?.Invoke(hitObject); //happening wayy to fast...
 
                     var datastream = new StreamData(
                         //does this need to go before the ?.Invoke()?

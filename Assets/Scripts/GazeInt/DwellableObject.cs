@@ -83,11 +83,17 @@ public class DwellableObject : MonoBehaviour
     }
     private void SelectionError(GameObject obj)
     {
-        if (obj == gameObject && !hasSelected)
+        if (obj == gameObject && hasSelected) 
+            // if selection error occur, while selected, trigger false selected
+            //error detection model only starts once selection triggered in gazemanager
         {
             Debug.Log("False Selected");
             //lets change Material to red
-            objRenderer.material = selectedMaterial;
+            objRenderer.material = falseSelectionMaterial;
+            //report name of material real quick
+            Debug.Log("Material Name: " + objRenderer.material.name);
+            // short wait moment?
+
             hasSelected = false;
         }
     }
