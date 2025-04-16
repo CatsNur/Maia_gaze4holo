@@ -247,11 +247,10 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 if (errorDetection.CheckError(gazeAngles) || (Input.GetKeyDown(KeyCode.Backspace))) //TODO: For testing trigger this with a keypress
                 {
                     Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
-                    SelectionError?.Invoke(hitObject); //This is not happening
+                    SelectionError?.Invoke(hitObject);
                     falseSelectionDetected = true;
 
                     var datastream = new StreamData(
-                        //does this need to go before the ?.Invoke()?
                         timestamp: DateTime.Now.ToString("HH:mm:ss.fff"),
                         gazePosition: actGazeRay.origin,
                         gazeDirection: actGazeRay.direction,
@@ -265,7 +264,6 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     Debug.Log($"[ErrorDetection] Correct selection on {hitObject?.name}");
                     falseSelectionDetected = false;
                 }
-
                 break; // Exit coroutine early after decision
 
                 /*ORIG if (errorDetection.CheckError(gazeAngles))
