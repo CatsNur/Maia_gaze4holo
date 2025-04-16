@@ -91,8 +91,8 @@ public class DwellableObject : MonoBehaviour
             //lets change Material to red
             objRenderer.material = falseSelectionMaterial;
             //report name of material real quick
-            Debug.Log("Material Name: " + objRenderer.material.name);
-            // short wait moment?
+            //Debug.Log("Material Name: " + objRenderer.material.name);
+            // short wait a moment? consider it jumps strait to hovering...
 
             hasSelected = false;
         }
