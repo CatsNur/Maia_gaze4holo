@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5801000422553167879}
   - component: {fileID: 2476767070490773944}
   m_Layer: 0
-  m_Name: GazePoint
+  m_Name: HeadPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9d79610ad86e34444a4c7eeb820f7df7, type: 2}
+  - {fileID: 2100000, guid: 22af01504e795b246ba8294b971269a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
