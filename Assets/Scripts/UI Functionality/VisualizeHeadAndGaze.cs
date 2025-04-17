@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MixedReality.Toolkit.Input;
-using UnityEditor.PackageManager;
+//using UnityEditor.PackageManager;
 
 public class VisualizeHeadAndGaze : MonoBehaviour
 {
