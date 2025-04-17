@@ -150,7 +150,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             else
             {
                 
-                Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward); //TODO! this should just be a ray coming from the camera!
+                Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward); //should be cam? but the selection criteria works...
                 fixationTimer += Time.deltaTime;
                 if (fixationTimer >= TimeToSelect)
                 {
@@ -160,7 +160,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                     if (Physics.Raycast(headGaze, out headHit, Mathf.Infinity))//checking selection quali
                     {
                         //if a head collider happens
-                        gazeHitPoint_ = gazeHit.point; //do i need this point, maybe for visualization?
+                        gazeHitPoint_ = gazeHit.point; 
                         if (HeadAligned(gazeHit,headHit))
                         {
                             select_ = true;
@@ -242,9 +242,9 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         while (selectionTimer < (timeToDestroy + 0.05f))
         {
             selectionTimer += Time.deltaTime;
-            if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms //also not called properly?
+            if (selectionTimer > (errorDetection.decisionTime / 1000)) //convert to ms 
             {
-                if (errorDetection.CheckError(gazeAngles) || (Input.GetKeyDown(KeyCode.Backspace))) //TODO: For testing trigger this with a keypress
+                if (errorDetection.CheckError(gazeAngles) || (Input.GetKeyDown(KeyCode.Backspace))) 
                 {
                     Debug.Log($"[ErrorDetection] False selection detected on {hitObject?.name}");
                     SelectionError?.Invoke(hitObject);
