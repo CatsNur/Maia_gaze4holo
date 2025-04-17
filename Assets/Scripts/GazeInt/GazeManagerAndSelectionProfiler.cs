@@ -150,7 +150,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
             else
             {
                 
-                Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward);
+                Ray headGaze = new(actGazeRay.origin, Camera.main.transform.forward); //TODO! this should just be a ray coming from the camera!
                 fixationTimer += Time.deltaTime;
                 if (fixationTimer >= TimeToSelect)
                 {
