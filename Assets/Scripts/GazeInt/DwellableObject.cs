@@ -88,22 +88,29 @@ public class DwellableObject : MonoBehaviour
             //error detection model only starts once selection triggered in gazemanager
         {
             Debug.Log("False Selected");
-            //lets change Material to red
-            objRenderer.material = falseSelectionMaterial;
-            //report name of material real quick
-            //Debug.Log("Material Name: " + objRenderer.material.name);
-            // short wait a moment? consider it jumps strait to hovering...
+            //objRenderer.material = falseSelectionMaterial;
+            //hasSelected = false;
 
-            hasSelected = false;
+            // short wait a moment? consider it jumps strait to hovering...
+            StopAllCoroutines(); // optional safety, to kill any previous wait
+            StartCoroutine(HandleFalseSelection());
         }
     }
 
-    // TODO: will need this with the error detection, currently not used
+    private IEnumerator HandleFalseSelection()
+    {
+        objRenderer.material = falseSelectionMaterial;
+        hasSelected = false;
+        yield return new WaitForSeconds(0.5f); // adjust time as needed
+        //objRenderer.material = originalMaterial;
+        ResetSelection();
+    }
+
     public void ResetSelection()
     {
         //could call this in the gaze manager
-        hasSelected = false;
-        objRenderer.material = originalMaterial; // Optionally reset material to original
+        //hasSelected = false;
+        objRenderer.material = originalMaterial;
     }
 
 }
