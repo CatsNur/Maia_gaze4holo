@@ -70,7 +70,7 @@ public class DwellableObject : MonoBehaviour
         if (obj == gameObject)
         {
             Debug.Log("Dwell exited: " + obj.name);
-            hasSelected = false;
+            //hasSelected = false;
         }
     }
     private void HandleSelection(GameObject obj) {
