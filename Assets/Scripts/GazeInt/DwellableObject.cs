@@ -91,8 +91,8 @@ public class DwellableObject : MonoBehaviour
             //objRenderer.material = falseSelectionMaterial;
             //hasSelected = false;
 
-            // short wait a moment? consider it jumps strait to hovering...
-            StopAllCoroutines(); // optional safety, to kill any previous wait
+            // short wait a moment? considering it jumps strait to hovering...
+            StopAllCoroutines(); 
             StartCoroutine(HandleFalseSelection());
         }
     }

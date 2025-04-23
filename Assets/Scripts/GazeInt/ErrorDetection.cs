@@ -149,7 +149,7 @@ public class ErrorDetection : MonoBehaviour
         }*/
     }
 
-    private void TestCheckError()
+    private void TestCheckError()//debugging purposes
     {
         List<float> angles = new List<float>();
         for (int i = 0; i < seqLength; i++)
