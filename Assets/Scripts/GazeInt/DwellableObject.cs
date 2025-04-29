@@ -79,7 +79,18 @@ public class DwellableObject : MonoBehaviour
             //lets change Material to orange
             objRenderer.material = selectedMaterial;
             hasSelected = true;
+
+            // short wait a moment?
+            StopAllCoroutines();
+            StartCoroutine(HandleCorrectSelection());
         }
+    }
+    private IEnumerator HandleCorrectSelection()
+    {
+        //TODO: handle the slow robot arm, user selects, it's determined correct, user can casually look arount till grabbed
+        //nothing happens in meantime
+        yield return new WaitForSeconds(1.5f); // adjust time as needed, now 500ms
+        
     }
     private void SelectionError(GameObject obj)
     {
@@ -101,7 +112,7 @@ public class DwellableObject : MonoBehaviour
     {
         objRenderer.material = falseSelectionMaterial;
         hasSelected = false;
-        yield return new WaitForSeconds(0.5f); // adjust time as needed
+        yield return new WaitForSeconds(0.5f); // adjust time as needed, now 500ms
         //objRenderer.material = originalMaterial;
         ResetSelection();
     }
