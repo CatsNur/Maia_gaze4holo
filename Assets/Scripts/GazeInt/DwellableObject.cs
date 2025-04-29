@@ -9,6 +9,8 @@ public class DwellableObject : MonoBehaviour
     [SerializeField] public Material selectedMaterial; // Assign this in the Inspector
     [SerializeField] public Material falseSelectionMaterial;
 
+    private Coroutine selectionCoroutine;
+
     public bool hasSelected = false;
 
     void Awake()
@@ -70,16 +72,31 @@ public class DwellableObject : MonoBehaviour
         if (obj == gameObject)
         {
             Debug.Log("Dwell exited: " + obj.name);
-            hasSelected = false;
+            //hasSelected = false;
+            if (!hasSelected)
+            {
+                objRenderer.material = originalMaterial;
+            }
         }
     }
     private void HandleSelection(GameObject obj) {
-        if (obj == gameObject && !hasSelected) {
-            Debug.Log("Selected");
-            //lets change Material to orange
-            objRenderer.material = selectedMaterial;
-            hasSelected = true;
+        if (obj == gameObject) {
+            Debug.Log($"HandleSelection called, hasSelected: {hasSelected}");
+            if (!hasSelected)
+            {
+                Debug.Log("Selected");
+                objRenderer.material = selectedMaterial;
+                hasSelected = true;
+
+                if (selectionCoroutine != null) StopCoroutine(selectionCoroutine);
+                selectionCoroutine = StartCoroutine(SelectionHoldDuration(2.0f));
+            }
         }
+    }
+    private IEnumerator SelectionHoldDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ResetSelection(); // reset visual + selection state
     }
     private void SelectionError(GameObject obj)
     {
@@ -88,22 +105,29 @@ public class DwellableObject : MonoBehaviour
             //error detection model only starts once selection triggered in gazemanager
         {
             Debug.Log("False Selected");
-            //lets change Material to red
-            objRenderer.material = falseSelectionMaterial;
-            //report name of material real quick
-            //Debug.Log("Material Name: " + objRenderer.material.name);
-            // short wait a moment? consider it jumps strait to hovering...
+            //objRenderer.material = falseSelectionMaterial;
+            //hasSelected = false;
 
-            hasSelected = false;
+            // short wait a moment? considering it jumps strait to hovering...
+            StopAllCoroutines(); 
+            StartCoroutine(HandleFalseSelection());
         }
     }
 
-    // TODO: will need this with the error detection, currently not used
+    private IEnumerator HandleFalseSelection()
+    {
+        objRenderer.material = falseSelectionMaterial;
+        //hasSelected = false;
+        yield return new WaitForSeconds(0.5f); // adjust time as needed, now 500ms
+        //objRenderer.material = originalMaterial;
+        ResetSelection();
+    }
+
     public void ResetSelection()
     {
         //could call this in the gaze manager
         hasSelected = false;
-        objRenderer.material = originalMaterial; // Optionally reset material to original
+        objRenderer.material = originalMaterial;
     }
 
 }

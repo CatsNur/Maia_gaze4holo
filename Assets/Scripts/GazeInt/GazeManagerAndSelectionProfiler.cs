@@ -54,7 +54,7 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         //selectionInProgress = true;
         //StartCoroutine(ResetSelectionFlag());
 
-        if (!select_ || hitObject == null) return false;
+        /*if (!select_ || hitObject == null) return false;
 
         OnSelect?.Invoke(hitObject);
         selectedObject = hitObject;
@@ -66,6 +66,32 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
         StartCoroutine(RunSelectionError());
 
         select_ = false;
+        return true;*/
+
+        if (!select_ || hitObject == null)
+            return false;
+
+        // If we previously selected a different object, unselect it
+        if (selectedObject != null && selectedObject != hitObject)
+        {
+            var previous = selectedObject.GetComponent<DwellableObject>();
+            if (previous != null)
+                previous.ResetSelection();
+        }
+
+        // Select the new object
+        OnSelect?.Invoke(hitObject);
+        selectedObject = hitObject;
+
+        // Reset the false selection flag
+        falseSelectionDetected = false;
+
+        // Start the error detection check
+        StartCoroutine(RunSelectionError());
+
+        // Prevent repeat selection until gaze re-aligns
+        select_ = false;
+
         return true;
     }
 
