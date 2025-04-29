@@ -95,10 +95,10 @@ namespace maia.YoloLabeling
                 var newObj = new YoloGameObject(recognition, cameraTransform,
                     actualCameraSize, yoloImageSize, virtualProjectionPlaneWidth);
                 //shitHack for now
-                /*if (newObj.PositionInSpace == null) {
+                if (newObj.PositionInSpace == null) {
                     newObj.PositionInSpace = Camera.main.transform.position + Camera.main.transform.forward * 2.0f;
-                    //newObj.Name = "UNKnown";
-                }*/
+                    newObj.Name = "Dumb";
+                }
                 if (newObj.PositionInSpace != null && !HasBeenSeenBefore(newObj))
                 {
                     //currently not hitting the if loop, position in space is null

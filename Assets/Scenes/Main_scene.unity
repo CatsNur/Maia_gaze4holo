@@ -136,6 +136,10 @@ PrefabInstance:
       value: Quest2
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_TagString
       value: TargetObject
       objectReference: {fileID: 0}
@@ -1029,6 +1033,10 @@ PrefabInstance:
     - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_Name
       value: Quest1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_TagString
@@ -2992,6 +3000,10 @@ PrefabInstance:
     - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_Name
       value: Quest3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 13c4664da4c66114c8bd6616ab5d6fe4, type: 3}
       propertyPath: m_TagString

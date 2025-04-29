@@ -31,7 +31,7 @@ namespace maia.Services
                 result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
             }
             //TODO:  add rando item, if lest is empty to see if label shows up
-            //Debug.Log($"GetYoloData called from Tensor extension script: Result {result.Count}"); not working
+            //Debug.Log($"GetYoloData called from Tensor extension script: Result {result.Count}"); //not working
             if (result.Count == 0) { 
                 var mainCamera = Camera.main;
                 if (mainCamera != null) {

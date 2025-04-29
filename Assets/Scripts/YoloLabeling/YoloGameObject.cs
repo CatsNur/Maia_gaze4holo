@@ -6,7 +6,7 @@ namespace maia.YoloLabeling
     public class YoloGameObject 
     {
         public Vector2 ImagePosition { get; }
-        public string Name { get; } //TODO: remove the set after debugging
+        public string Name { get; set; } //TODO: remove the set after debugging
         public GameObject DisplayObject { get; set; }
         public Vector3? PositionInSpace { get; set; }
         public float TimeLastSeen { get; set; }
@@ -73,7 +73,7 @@ namespace maia.YoloLabeling
                     (positionOnPlane - transform.position),
                     out var hitInfo, MaxLabelDistance, LayerMask.GetMask(SpatialMeshLayerName))) //not hitting anything
             {
-                //Debug.Log("HIT");
+                Debug.Log("HIT");
                 return hitInfo.point;
             }
             return null;
