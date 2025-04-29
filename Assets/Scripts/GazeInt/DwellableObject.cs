@@ -9,6 +9,8 @@ public class DwellableObject : MonoBehaviour
     [SerializeField] public Material selectedMaterial; // Assign this in the Inspector
     [SerializeField] public Material falseSelectionMaterial;
 
+    private Coroutine selectionCoroutine;
+
     public bool hasSelected = false;
 
     void Awake()
@@ -71,26 +73,30 @@ public class DwellableObject : MonoBehaviour
         {
             Debug.Log("Dwell exited: " + obj.name);
             //hasSelected = false;
+            if (!hasSelected)
+            {
+                objRenderer.material = originalMaterial;
+            }
         }
     }
     private void HandleSelection(GameObject obj) {
-        if (obj == gameObject && !hasSelected) {
-            Debug.Log("Selected");
-            //lets change Material to orange
-            objRenderer.material = selectedMaterial;
-            hasSelected = true;
+        if (obj == gameObject) {
+            Debug.Log($"HandleSelection called, hasSelected: {hasSelected}");
+            if (!hasSelected)
+            {
+                Debug.Log("Selected");
+                objRenderer.material = selectedMaterial;
+                hasSelected = true;
 
-            // short wait a moment?
-            StopAllCoroutines();
-            StartCoroutine(HandleCorrectSelection());
+                if (selectionCoroutine != null) StopCoroutine(selectionCoroutine);
+                selectionCoroutine = StartCoroutine(SelectionHoldDuration(2.0f));
+            }
         }
     }
-    private IEnumerator HandleCorrectSelection()
+    private IEnumerator SelectionHoldDuration(float duration)
     {
-        //TODO: handle the slow robot arm, user selects, it's determined correct, user can casually look arount till grabbed
-        //nothing happens in meantime
-        yield return new WaitForSeconds(1.5f); // adjust time as needed, now 500ms
-        
+        yield return new WaitForSeconds(duration);
+        ResetSelection(); // reset visual + selection state
     }
     private void SelectionError(GameObject obj)
     {
@@ -111,7 +117,7 @@ public class DwellableObject : MonoBehaviour
     private IEnumerator HandleFalseSelection()
     {
         objRenderer.material = falseSelectionMaterial;
-        hasSelected = false;
+        //hasSelected = false;
         yield return new WaitForSeconds(0.5f); // adjust time as needed, now 500ms
         //objRenderer.material = originalMaterial;
         ResetSelection();
@@ -120,7 +126,7 @@ public class DwellableObject : MonoBehaviour
     public void ResetSelection()
     {
         //could call this in the gaze manager
-        //hasSelected = false;
+        hasSelected = false;
         objRenderer.material = originalMaterial;
     }
 
