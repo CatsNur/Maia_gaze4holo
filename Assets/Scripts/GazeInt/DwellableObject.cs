@@ -17,7 +17,8 @@ public class DwellableObject : MonoBehaviour
     {
         //objRenderer = GetComponent<Renderer>(); //this assumes its on obj, assed chatgpt for sophis
         //originalMaterial = objRenderer.material; // Store the original material
-        //Debug.Log("I am dwellable");
+        //get object name
+        Debug.Log("DwellableObject is attached to: " + gameObject.name);
 
         // First, try to get the Renderer from the parent object
         objRenderer = GetComponent<Renderer>();
@@ -34,6 +35,8 @@ public class DwellableObject : MonoBehaviour
         else
         {
             originalMaterial = objRenderer.material; // Store the original material
+            //Debug.Log("orig material stored");
+            Debug.Log("Material name: " + objRenderer.material.name);
         }
     }
 
