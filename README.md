@@ -29,3 +29,5 @@ Severitt, B. R., Sauer, Y., Castner, N., Fuhl, W., & Wahl, S. (2025). Recognitio
 
 # Inspiration for parts of the code
 Thank you "LocalJoost" for your break down of object detection in AR, have borrowed some code and assets, but currently not using
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CatsNur/Maia_gaze4holo)
