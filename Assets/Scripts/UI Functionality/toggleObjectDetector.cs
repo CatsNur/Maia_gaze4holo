@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class toggleObjectDetector : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject TargetCollection;      // Assign your empty GameObject that holds the children
+    private bool targetsActivated = true; // Track the toggle state
+
+    public void ToggleTracking(bool isOn)
     {
-        
+        targetsActivated = isOn;
+
+        if (targetsActivated)
+        {
+            // Activate all children
+            foreach (Transform child in TargetCollection.transform)
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            // Deactivate all children
+            foreach (Transform child in TargetCollection.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
