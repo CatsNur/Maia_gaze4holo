@@ -2921,7 +2921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8530624725811928824, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       propertyPath: <IsToggled>k__BackingField.active
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8530624725811928824, guid: f443144a6d408c34bb8a7d70a73644c4, type: 3}
       propertyPath: <IsToggled>k__BackingField.onExited.m_PersistentCalls.m_Calls.Array.size
@@ -3088,6 +3088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TargetCollection: {fileID: 1051772004}
+  hologramCollection: {fileID: 0}
 --- !u!1 &2004734373 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2589716731366296177, guid: 2c4cecf25adbc2f4c88bc2752a9c3264, type: 3}

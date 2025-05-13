@@ -97,7 +97,7 @@ namespace maia.YoloLabeling
                 //shitHack for now
                 if (newObj.PositionInSpace == null) {
                     newObj.PositionInSpace = Camera.main.transform.position + Camera.main.transform.forward * 2.0f;
-                    newObj.Name = "Dumb";
+                    newObj.Name = "Dumb Object";
                 }
                 if (newObj.PositionInSpace != null && !HasBeenSeenBefore(newObj))
                 {
