@@ -139,7 +139,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                 gazePosition: actGazeRay.origin,
                 gazeDirection: actGazeRay.direction,
                 falseSelect: falseSelectionDetected,
-                selectedObject: selectedObject != null ? selectedObject.name : ""
+                selectedObject: selectedObject != null ? selectedObject.name : "",
+                objectPosition: selectedObject != null ? selectedObject.transform.position : Vector3.zero // Add object position to the stream
             );
             DataStreamer.Instance.Stream(datastream);
         }
@@ -281,7 +282,8 @@ public class GazeManagerAndSelectionProfiler : MonoBehaviour
                         gazePosition: actGazeRay.origin,
                         gazeDirection: actGazeRay.direction,
                         falseSelect: falseSelectionDetected,
-                        selectedObject: selectedObject != null ? selectedObject.name : ""
+                        selectedObject: selectedObject != null ? selectedObject.name : "",
+                        objectPosition: selectedObject != null ? selectedObject.transform.position : Vector3.zero // Add object position to the stream
                     );
                     DataStreamer.Instance.Stream(datastream);
                 }
